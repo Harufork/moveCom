@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+{% load static %}
+<html lang="ru">
+<head>
+	<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">	
+	<link rel="stylesheet" type="text/css" href="{% static 'css/style.css' %}?3" >
+
+    <meta charset="UTF-8">
+    <meta http-equiv="Cache-Control" content="no-cache" />
+    <title>{{ title }}</title>
+</head>
+<body>
+	<header>
+		
+		<div class="leftheaderinfo">
+			<a href="#" class="logo"><img src="{% static 'image/logo.png' %}" alt="no logo"></a>
+			<div class="navigation">
+				<a href="#">Оформить заказ</a>
+				<a href="#">Помощь с переездом</a>
+				<a href="#">Поддержка</a>
+				<a href="#">FAQ</a>
+			</div>
+		</div>
+		
+		<div class="accountInfo">
+			<a class="abtn btnheader" href="#">Войти</a>
+			<a class="abtn btnfocus btnheader" href="#">Регистрация</a>
+		</div>
+
+	</header>
+    {% block content %}
+    {% endblock %}
+
+    <footer>
+		<div class="road"></div>
+	</footer>
+
+	<script type="text/javascript" src="{% static 'js/jquery.js' %}"></script>
+	<script type="text/javascript" src="{% static 'js/style.js' %}"></script>
+</body>
+</html>

@@ -1,0 +1,38 @@
+{% extends 'base.html' %}
+
+{% block content %}
+{% load static %}
+<main>
+	<div class="topbord"></div>
+	<div class="mainbigpanel">
+
+			<div class="mainbigpanel_column cml">
+				<button  class="hidepanel hdleft" data-selecthide="#skypanel" >]</button>
+				<button class="hidepanel hdleft" data-selecthide="#infrontpanel">]</button>
+			</div>
+			<div id="skypanel" class="mainpanel mpl">sddsfdfsdfssdfdfsdfs</div>
+			<div id="roofpanel" class="mainpanel mpr">sddsfdfsdfssdfdfsdfs</div>
+			
+			
+		<div class="content_mainbigpanel">
+				<img src="{% static 'image/mainboard.png' %}">
+			</div> 
+
+			
+			
+			<div id="infrontpanel" class="mainpanel mpl"></div>
+			<div id="homepanel" class="mainpanel mpr"></div>
+			<div class="mainbigpanel_column cmr">
+				<button data-skypanel class="hidepanel hdright" data-selecthide="#roofpanel">[</button>
+				<button class="hidepanel hdright" data-selecthide="#homepanel">[</button>
+			</div>
+
+	</div>
+
+	<div class="nameadlist">
+		<h3>Старый ко-ко-джанго</h3>
+	</div>
+
+	<div class="slidebar"></div>
+</main>
+{% endblock %}
