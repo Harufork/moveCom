@@ -1,0 +1,13 @@
+{% extends 'base_content.html' %}
+
+{% block contents %}
+	<div class="card">
+		<h3 class="heading-page"></h3>
+		<h1>{{title}}</h1>
+		<p>Вы уверены, что хотите удалить: {{ object }}?</p>
+		<form action="" method="POST">
+		  {% csrf_token %}
+		  <input class="abtn" type="submit" value="Да, удалить" />
+		</form>
+	</div>
+{% endblock %}

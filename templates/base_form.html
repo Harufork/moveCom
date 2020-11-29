@@ -1,0 +1,14 @@
+{% extends 'base_content.html' %}
+
+{% block contents %}
+	<div class="card">
+		<h3 class="heading-page"></h3>
+		<form action="" method="post" enctype="multipart/form-data">
+	        {% csrf_token %}
+	        <table>
+	        {{ form }}
+	        </table>
+	        <input class="abtn" type="submit" value="{{text_button}}" />
+    	</form>
+	</div>
+{% endblock %}

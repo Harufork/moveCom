@@ -1,0 +1,12 @@
+{% extends 'base_list.html' %}
+
+{% block data %}
+	  	<td>{{ object.name }}</td>
+	  <td>
+	{% if object.mode %}
+		<a href="{{ object.mode.get_absolute_url }}">{{ object.mode }}</a>
+	{% else %}
+		Нет
+	{% endif %}
+	</td>
+{% endblock %}

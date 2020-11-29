@@ -1,10 +1,18 @@
 from django.db import models
+from django.urls import reverse
 
 
 class ModeTransport(models.Model):
     name = models.CharField(max_length=255,
                             verbose_name="Наименование вида",
-                            help_text="Введите наименование вида (прим. Грузовик 14 т.)")
+                            help_text="Введите наименование вида (прим. Грузовик 14 т.)",
+                            unique=True)
+    image = models.ImageField(upload_to="static/image/data/transport",
+                              verbose_name="Изображение вида",
+                              blank=True)
+    available = models.BooleanField(verbose_name="Доступен",
+                                    help_text="Выберите доступен ли вид транспорта для выбора",
+                                    default=False)
 
     class Meta:
         ordering = ["name"]  # сортировка при выводе
@@ -13,6 +21,9 @@ class ModeTransport(models.Model):
 
     def __str__(self):
         return self.name
+
+    def get_absolute_url(self):
+        return reverse('modetransport', args=[self.pk])
 
 
 class Transport(models.Model):
@@ -23,10 +34,10 @@ class Transport(models.Model):
                                      verbose_name="Гос. номер",
                                      help_text="Введите государственный номер транспорта",
                                      unique=True)
-    aviable = models.BooleanField(verbose_name="Активно",
-                                  help_text="Выберите доступен ли транспорт сейчас (прим. он"
-                                            " может быть в автомастерской)",
-                                  default=False)
+    available = models.BooleanField(verbose_name="Активно",
+                                    help_text="Выберите доступен ли транспорт сейчас (прим. он"
+                                              " может быть в автомастерской)",
+                                    default=False)
     mode = models.ForeignKey(ModeTransport, on_delete=models.SET_NULL, null=True,
                              blank=True, verbose_name="Вид авто", help_text="Выберите вид авто")
 
@@ -37,3 +48,6 @@ class Transport(models.Model):
 
     def __str__(self):
         return f"{self.name}: {self.license_plate}"
+
+    def get_absolute_url(self):
+        return reverse('transport', args=[self.pk])

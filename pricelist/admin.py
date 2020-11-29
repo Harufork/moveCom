@@ -1,9 +1,9 @@
 from django.contrib import admin
-from .models import PriceListRole, PriceListModeTransport, \
-    PriceListModeTDistance, PriceListPacking
+from .models import PriceRole, PriceModeTransport, \
+    PriceModeTDistance, PricePacking
 
 
-admin.site.register(PriceListRole)
-admin.site.register(PriceListModeTransport)
-admin.site.register(PriceListModeTDistance)
-admin.site.register(PriceListPacking)
+admin.site.register(PriceRole)
+admin.site.register(PriceModeTransport)
+admin.site.register(PriceModeTDistance)
+admin.site.register(PricePacking)

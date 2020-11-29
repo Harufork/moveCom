@@ -1,0 +1,13 @@
+{% extends 'base_detail.html' %}
+
+{% block data %}
+	<p>{{verbose.name}}: {{ object.name }}</p>
+	<p>{{verbose.image}}:
+		{% if object.image %}
+			</p><img src="{{object.image.url}}">
+		{% else %}
+			Отсутствует</p>
+		{% endif %}
+	
+		
+{% endblock %}

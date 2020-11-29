@@ -1,0 +1,7 @@
+{% extends 'base_list.html' %}
+
+{% block data %}
+	<td>{{ object.get_status_display }}</td>
+	<td>{{ object.date_of_creation }}</td>
+	<td>{{ object.full_name }}</td>
+{% endblock %}

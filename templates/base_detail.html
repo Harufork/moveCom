@@ -1,0 +1,10 @@
+{% extends 'base_content.html' %}
+
+{% block contents %}
+	<div class="card">
+		<a class="abtn" href="{{buttons_urls.change}}">Редактировать</a>
+		<a class="abtn" href="{{buttons_urls.delete}}">Удалить</a>
+	  	{% block data %}
+	  	{% endblock %}
+	</div>
+{% endblock %}

@@ -3,6 +3,7 @@ from django.contrib.auth.models import User, Group
 from django.db.models.signals import post_save
 from django.dispatch import receiver
 from config.settings import DATETIME_FORMAT
+from django.urls import reverse
 
 class Profile(models.Model):
     """Дополнительная информация для пользователей"""
@@ -28,6 +29,9 @@ class Profile(models.Model):
         return f"{self.user.first_name} {self.user.last_name}" \
                f" {self.patronymic}"
 
+    def get_absolute_url(self):
+        return reverse('profile', args=[self.pk])
+
 
 @receiver(post_save, sender=User)
 def create_user_profile(sender, instance, created, **kwargs):
@@ -51,7 +55,7 @@ class Employee(models.Model):
     для уменьшение задержки поиска сотрудников в базе, при их выборе на заказ"""
     user = models.OneToOneField(User, on_delete=models.CASCADE,
                                 verbose_name="Пользователь")
-    aviable = models.BooleanField(verbose_name="Активен", default=False,
+    available = models.BooleanField(verbose_name="Активен", default=False,
                                   help_text="Является ли сотрудник активным "
                                             "для работы с заказами")
 
@@ -65,9 +69,12 @@ class Employee(models.Model):
             patronymic = " " + self.user.profile.patronymic
         except Profile.DoesNotExist:
             patronymic = ""
-        return f"{'Активен' if self.aviable else 'Не активен'}: " \
+        return f"{'Активен' if self.available else 'Не активен'}: " \
                f"{self.user.first_name} {self.user.last_name}" \
                f"{patronymic}"
+
+    def get_absolute_url(self):
+        return reverse('employee', args=[self.pk])
 
 
 @receiver(post_save, sender=User)
@@ -91,10 +98,10 @@ class EmployeeRole(models.Model):
     """Дополнительная информация для group"""
     group = models.OneToOneField(Group, on_delete=models.CASCADE,
                                  verbose_name="Группа")
-    aviable = models.BooleanField(verbose_name="Активна", default=False)
-    aviable_in_order = models.BooleanField(verbose_name="Найм в заказе на переезд", default=False,
+    available = models.BooleanField(verbose_name="Активна", default=False)
+    available_in_order = models.BooleanField(verbose_name="Найм в заказе на переезд", default=False,
                                            help_text="Доступен для найма клиентом в заказе на переезд")
-    aviable_in_request = models.BooleanField(verbose_name="Найм в заявке на помощь", default=False,
+    available_in_request = models.BooleanField(verbose_name="Найм в заявке на помощь", default=False,
                                              help_text="Участвует в заявке помощи с заказом")
 
     class Meta:
@@ -105,6 +112,9 @@ class EmployeeRole(models.Model):
     def __str__(self):
         return self.group.name
 
+    def get_absolute_url(self):
+        return reverse('employeerole', args=[self.pk])
+
 
 class Notification(models.Model):
     """Уведомления для пользователей"""
@@ -113,6 +123,7 @@ class Notification(models.Model):
     date_of_creation = models.DateTimeField(verbose_name="Дата создания заказа",
                                             auto_now_add=True)
     content = models.TextField(verbose_name="Содержание")
+    viewed = models.BooleanField(verbose_name="Просмотрено", default=False)
 
     class Meta:
         ordering = ["date_of_creation"]  # сортировка при выводе
@@ -121,3 +132,6 @@ class Notification(models.Model):
 
     def __str__(self):
         return f"{format(self.date_of_creation, DATETIME_FORMAT)} - {self.user}"
+
+    def get_absolute_url(self):
+        return reverse('notification', args=[self.pk])

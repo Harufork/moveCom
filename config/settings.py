@@ -131,11 +131,15 @@ DATETIME_FORMAT = "%d %B %Y %H:%M:%S"
 # https://docs.djangoproject.com/en/3.1/howto/static-files/
 
 STATIC_URL = '/static/'
-
 STATIC_ROOT = BASE_DIR / "staticfiles"
 STATICFILES_DIRS = [
     BASE_DIR / "static",
 ]
 
 # MEDIA_URL = '/media/'
-# MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
+# MEDIA_ROOT = BASE_DIR / "media"
+
+LOGIN_REDIRECT_URL = '/' # После входа пользователь будет перенаправлен на главную страницу
+# ,поумлочанию в profile
+
+EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend' # Письма для сброса пароля будут прописаны в консоль

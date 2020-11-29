@@ -1,0 +1,22 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<main>
+	<div class="card">
+		<div class="navigation_panel">
+			<a href="{% url 'navigation' %}">Навигация</a>
+			{% for key, value in navigation.items %}
+				<span> 🡢 </span>
+				{% if forloop.last %}
+					<span><a href="{{ value }}">{{ key }}</a></span>
+				{% else %}
+					<a href="{{ value }}">{{ key }}</a>
+				{% endif %}
+			{% endfor %}
+		</div>
+	</div>
+
+	{% block contents %}
+	{% endblock %}
+</main>
+{% endblock %}

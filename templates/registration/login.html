@@ -1,0 +1,42 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<main>
+	<div class="card">
+		{% if form.errors %}
+			<p>Введёный пароль или логин неверен. Попробуйте ещё раз.</p>
+		{% endif %}
+
+		{% if next %}
+		  {% if user.is_authenticated %}
+		    <p>У вас нет доступак к этой странице.</p>
+		  {% else %}
+		    <p>Войдите, чтобы увидеть содержание этой страницы.</p>
+		  {% endif %}
+		{% endif %}
+
+		<form method="post" action="{% url 'login' %}">
+		{% csrf_token %}
+		<table>
+
+		<tr>
+		  <td>Логин</td>
+		  <td>{{ form.username }}</td>
+		</tr>
+
+		<tr>
+		  <td>{{ form.password.label_tag }}</td>
+		  <td>{{ form.password }}</td>
+		</tr>
+		</table>
+
+		<input type="submit" value="Войти" class="abtn btnfocus" />
+		<input type="hidden" name="next" value="{{ next }}" />
+		</form>
+
+
+		<p><a href="{% url 'password_reset' %}">Забыли пароль?</a></p>
+
+	</div>
+</main>
+{% endblock %}

@@ -5,7 +5,7 @@ from config.settings import DATETIME_FORMAT
 from django.contrib.auth.models import Group
 from transport.models import Transport, ModeTransport
 from packing.models import Packing
-
+from django.urls import reverse
 
 class RequestBase(models.Model):
     class Meta:
@@ -31,7 +31,7 @@ class RequestBase(models.Model):
     full_name = models.CharField(max_length=255,
                                  verbose_name="ФИО клиента",
                                  help_text="Введите ФИО клиента")
-    phone_number = models.CharField(max_length=20,
+    phone_number = models.CharField(max_length=18,
                                     verbose_name="Номер телефона",
                                     help_text="Введите номер телефона")
     TIME_TYPE = (
@@ -43,7 +43,8 @@ class RequestBase(models.Model):
     )
     time_type = models.CharField(max_length=1, choices=TIME_TYPE, default='m',
                                  verbose_name="Время выполнения заказа")
-    date_of_completion = models.DateTimeField(verbose_name="Дата приезда")
+    date_of_completion = models.DateField(verbose_name="Дата приезда")
+    time_of_completion = models.TimeField(verbose_name="Время приезда", null=True, blank=True)
     comment = models.TextField(verbose_name="Комментарий", blank=True,
                                help_text="Введите примечания по заказу")
 
@@ -64,6 +65,9 @@ class MoveAssistanceRequest(RequestBase):
     def __str__(self):
         return f"{format(self.date_of_creation, DATETIME_FORMAT)}:" \
                f" {self.full_name} - {self.client_adress}"
+
+    def get_absolute_url(self):
+        return reverse('moveassistancerequest', args=[self.pk])
 
 
 class AssistantForMARequest(models.Model):
@@ -88,9 +92,25 @@ class AssistantForMARequest(models.Model):
     def __str__(self):
         return f"{format(self.move_assistance_request)}: {self.group} - {self.employee}"
 
+    def get_absolute_url(self):
+        return reverse('assistantformarequest', args=[self.pk])
+
 
 class MoveRequest(RequestBase):
     """Описание заявки на переезд"""
+    PAYMENT_TYPE = (
+        ('c', 'Наличный рассчет при выполнении заказа'),
+        ('n', 'Безналичный рассчет'),
+    )
+    payment_type = models.CharField(max_length=1, choices=PAYMENT_TYPE,
+                                    default='c', verbose_name="Тип опплаты")
+    RECEIVING_PACKING = (
+        ('p', 'Самовывоз'),
+        ('g', 'Получение при выполнение заказа'),
+    )
+    receiving_packaging = models.CharField(max_length=1, choices=RECEIVING_PACKING, default='p',
+                                           verbose_name="Тип получения упаковки")
+
     class Meta:
         verbose_name = "Заявка на переезд"
         verbose_name_plural = "Заявки на переезд"
@@ -98,6 +118,9 @@ class MoveRequest(RequestBase):
     def __str__(self):
         return f"{format(self.date_of_creation, DATETIME_FORMAT)}:" \
                f" {self.full_name}"
+
+    def get_absolute_url(self):
+        return reverse('moverequest', args=[self.pk])
 
 
 class MoveOrder(models.Model):
@@ -110,20 +133,8 @@ class MoveOrder(models.Model):
     confirm_request = models.ForeignKey(Employee, on_delete=models.SET_NULL,
                                         verbose_name="Проверил и потвердил заявку",
                                         null=True, related_name="confirmed_move_request")
-    RECEIVING_PACKING = (
-        ('p', 'Самовывоз'),
-        ('g', 'Получение при выполнение заказа'),
-    )
-    receiving_packaging = models.CharField(max_length=1, choices=RECEIVING_PACKING, default='p',
-                                           verbose_name="Тип получения упаковки")
     total_cost = models.DecimalField(decimal_places=2, max_digits=12,
                                      verbose_name="Итоговая стоимость заказа")
-    PAYMENT_TYPE = (
-        ('c', 'Наличный рассчет при выполнении заказа'),
-        ('n', 'Безналичный рассчет'),
-    )
-    payment_type = models.CharField(max_length=1, choices=PAYMENT_TYPE,
-                                    default='pen', verbose_name="Тип опплаты")
 
     class Meta:
         ordering = ["date_of_confirm"]
@@ -133,6 +144,9 @@ class MoveOrder(models.Model):
     def __str__(self):
         return f"{format(self.date_of_confirm, DATETIME_FORMAT)}:" \
                f" {self.total_cost} - {self.move_request}"
+
+    def get_absolute_url(self):
+        return reverse('moveorder', args=[self.pk])
 
 
 class EmployeeForMove(models.Model):
@@ -157,6 +171,9 @@ class EmployeeForMove(models.Model):
 
     def __str__(self):
         return f"{format(self.move_request)}: {self.group} - {self.employee}"
+
+    def get_absolute_url(self):
+        return reverse('employeeformove', args=[self.pk])
 
 
 class TransportForMove(models.Model):
@@ -184,6 +201,9 @@ class TransportForMove(models.Model):
     def __str__(self):
         return f"{format(self.move_request)}: {self.mode_transport} - {self.transport}"
 
+    def get_absolute_url(self):
+        return reverse('transportformove', args=[self.pk])
+
 
 class PackingForMove(models.Model):
     """Описание выбора транспорта для выполнения переезда"""
@@ -202,6 +222,9 @@ class PackingForMove(models.Model):
 
     def __str__(self):
         return f"{format(self.move_request)}: {self.packing} - {self.total}"
+
+    def get_absolute_url(self):
+        return reverse('packingformove', args=[self.pk])
 
 
 class RouteMove(models.Model):
@@ -222,3 +245,7 @@ class RouteMove(models.Model):
 
     def __str__(self):
         return f"{format(self.move_request)}: {self.point_a} - {self.point_b}"
+
+    def get_absolute_url(self):
+        return reverse('routemove', args=[self.pk])
+

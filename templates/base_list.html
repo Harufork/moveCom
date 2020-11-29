@@ -1,0 +1,65 @@
+{% extends 'base_content.html' %}
+
+{% block contents %}
+	<div class="card base_list">
+		{% if object_list %}
+			<!-- <h3 class="heading-page">{{title}}</h3> -->
+			<table class="table">
+				<tr>
+					<th></th>
+					{% for key, value in verbose.items %}
+						<th>{{value}}</th>
+					{% endfor %}
+					
+					{% if bool_perm_of_user.add %}
+					<th colspan="3"><a class="abtn" href="{{buttons_urls.add}}">Создать</a></th>
+					{% endif %}
+
+					{% if bool_perm_of_user.change %}
+					<th></th>
+					{% endif %}
+
+					{% if bool_perm_of_user.delete %}
+					<th></th>
+					{% endif %}
+					
+				</tr>
+				{% for object in object_list %}
+				  <tr>
+				  	<td class="table_td_id">{{forloop.counter}}</td>
+				  	{% block data %}
+				  	{% endblock %}
+
+				  	
+			  		<td class="btn_table"><a href="{{ object.get_absolute_url }}">➥Подробнее</a></td>
+				  	{% if bool_perm_of_user.change %}
+					  	<td class="btn_table"><a title="Изменить объект" href="{% url buttons_urls.abstract_change object.pk %}">✐Ред</a></td>
+				  	{% endif %}
+				  	{% if bool_perm_of_user.delete %}
+				  		<td class="btn_table"><a class="del_table" href="{% url buttons_urls.abstract_delete object.pk %}" title="Удалить">🗑</a></td>
+				  	{% endif %}
+				  </tr>
+				{% endfor %}
+			</table>
+
+			{% if is_paginated %}
+				<div class="pagination">
+	              {% if page_obj.has_previous %}
+	                  <a href="{{ request.path }}?page={{ page_obj.previous_page_number }}">ᐊ</a>
+	              {% endif %}
+	              <span class="page-current">
+	                  Страница {{ page_obj.number }} из {{ page_obj.paginator.num_pages }}
+	              </span>
+	              {% if page_obj.has_next %}
+	                  <a href="{{ request.path }}?page={{ page_obj.next_page_number }}">ᐅ</a>
+	              {% endif %}
+		      </div>
+			{% endif %}
+			
+		{% else %}
+			<h1>Список пуст</h1>
+			<p>Создайте первый объект в списке.</p>
+			<a class="abtn" href="{{buttons_urls.add}}">Создать</a>
+		{% endif %}
+	</div>
+{% endblock %}
