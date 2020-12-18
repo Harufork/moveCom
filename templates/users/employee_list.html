@@ -1,0 +1,12 @@
+{% extends 'base_list.html' %}
+
+{% block data %}
+	<td><a href="">{{ object.user }}</a></td>
+
+	{% if object.available %}
+		<td>Да</td>
+	{% else %}
+		<td>Нет</td>
+	{% endif %}
+
+{% endblock %}

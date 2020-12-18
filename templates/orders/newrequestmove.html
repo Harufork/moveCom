@@ -1,116 +1,178 @@
 {% extends 'base.html' %}
-
 {% block content %}
 <main>
-	<div class="card">
-		<h3>Оформление заказа</h3>
-		<p>Если у вас что-то не получается, то можете <a href="">связаться</a> с нашим колл-центром или <a href="">оставить заявку</a> на консультацию, в случае сложностей с анализом переезда. </p>
-	</div>
-	<div class="card newrequestmove">
-
-			<form action="" method="post">
-				{% csrf_token %}
-		        <table>
-		        	{{ mvreq_form }}
-		        </table>
-<!-- 		        <ul>
-		        	<li>
-		        		<label for="">{{form.renewal_date}}</label>
-		        	</li>
-		        </ul> -->
-		        <div class="calloda">
-		        	<div class="mini_card">		        
-			        	<h3>Точки назначения</h3>
-				        <ul id="adding_route">
-				        	<input type="hidden" id="routs_count" value={{routs_count}}>
-					        {% for r in routs %}
-						        <li id="zero_route">
-						        	<input id="point_a{{forloop.counter0}}" name="point_a{{forloop.counter0}}" type="text" placeholder="Откуда" value="{{r.0}}" class="
+    <div class="card">
+        <h3>Оформление заказа</h3>
+        <p>Если у вас что-то не получается, то можете <a href="">связаться</a> с нашим колл-центром или <a href="">оставить заявку</a> на консультацию, в случае сложностей с анализом переезда. </p>
+    </div>
+    <div class="card newrequestmove">
+        <form action="" method="POST">
+            {% csrf_token %}
+            <div class="two_up_card">
+                <div>
+                    {{ mvreq_form.time_type.label_tag }}{{ mvreq_form.time_type }}
+                    <div>{% for error in mvreq_form.time_type.errors %}
+                        <label class="dont_valid_label" for="{{mvreq_form.time_type.id_for_label}}">{{error|escape}}</label>
+                        {% endfor %}</div>
+                    {{ mvreq_form.date_of_completion.label_tag }}{{ mvreq_form.date_of_completion }}{{ mvreq_form.time_of_completion }}
+                    <div>
+                        {% for error in mvreq_form.date_of_completion.errors %}
+                        <label class="dont_valid_label" for="{{mvreq_form.date_of_completion.id_for_label}}">{{error|escape}}</label>
+                        {% endfor %}
+                    </div>
+                    <div>
+                        {% for error in mvreq_form.time_of_completion.errors %}
+                        <label class="dont_valid_label" for="{{mvreq_form.time_of_completion.id_for_label}}">{{error|escape}}</label>
+                        {% endfor %}
+                    </div>
+                    {{ mvreq_form.full_name.label_tag }}{{ mvreq_form.full_name }}
+                    <div>
+                        {% for error in mvreq_form.full_name.errors %}
+                        <label class="dont_valid_label" for="{{mvreq_form.full_name.id_for_label}}">{{error|escape}}</label>
+                        {% endfor %}
+                    </div>
+                </div>
+                <div>
+                    {{ mvreq_form.receiving_packaging.label_tag }}{{ mvreq_form.receiving_packaging }}
+                    <div>
+                        {% for error in mvreq_form.receiving_packaging.errors %}
+                        <label class="dont_valid_label" for="{{mvreq_form.receiving_packaging.id_for_label}}">{{error|escape}}</label>
+                        {% endfor %}
+                    </div>
+                    {{ mvreq_form.payment_type.label_tag }}{{ mvreq_form.payment_type }}
+                    <div>
+                        {% for error in mvreq_form.payment_type.errors %}
+                        <label class="dont_valid_label" for="{{mvreq_form.payment_type.id_for_label}}">{{error|escape}}</label>
+                        {% endfor %}
+                    </div>
+                    {{ mvreq_form.phone_number.label_tag }}{{ mvreq_form.phone_number }}
+                    <div>
+                        {% for error in mvreq_form.phone_number.errors %}
+                        <label class="dont_valid_label" for="{{mvreq_form.phone_number.id_for_label}}">{{error|escape}}</label>
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+            <div class="calloda">
+                <div class="routs">
+                    <h3>Точки назначения</h3>
+                    <ul id="adding_route">
+                        <input type="hidden" id="routs_count" value={{routs_count}}>
+                        {% for r in routs %}
+                        <li id="zero_route">
+                            <input id="point_a{{forloop.counter0}}" name="point_a{{forloop.counter0}}" type="text" placeholder="Откуда" value="{{r.0}}" class="
 						        	{% if not r.2 %}
 						        	dont_valid
 						        	{% endif %}
 						        	">
-						        	<span>🡢</span>
-						        	<input id="point_b{{forloop.counter0}}" name="point_b{{forloop.counter0}}" type="text" placeholder="Куда" value="{{r.1}}" class="
+                            <span>🡢</span>
+                            <input id="point_b{{forloop.counter0}}" name="point_b{{forloop.counter0}}" type="text" placeholder="Куда" value="{{r.1}}" class="
 						        	{% if not r.3 %}
 						        	dont_valid
 						        	{% endif %}
 						        	">
-						        	{% if not r.2 or not r.3%}
-						        		<label for="{% if not r.2 %}point_a{% else %}point_b{% endif %}{{forloop.counter0}}" class="dont_valid_label">Поле должно быть заполнено.</label>
-						        	{% endif %}
-						        </li>
-					        {% endfor %}
-				        </ul>
-				        <input id="add_route" class="abtn" type="button" value="Добавить">
-			        </div>
-
-					<div class="mini_card">		        
-			        	<h3>Персонал</h3>
-				        <ul>
-				        	{% load order_extras %}
-					        {% for er in employee_roles %}
-					        <li>
-					        	<label for="er_quan_{{ er.pk }}">{{ er }}</label>
-					        	<input id="er_quan_{{ er.pk }}" name="er_quan_{{ er.pk }}" type="number" min="0" placeholder="Количество" title="Введите требуемое количество персонала" value="{{ emp_roles_post|get_quan:er.pk }}" class="{% if emp_roles_post|get_nothing_quan:er.pk %}dont_valid{% endif %}">
-					        	<input id="er_hird_{{ er.pk }}" name="er_hird_{{ er.pk }}" type="number" min="0" placeholder="Время найма (в часах)" title="Введите требуемое время найма в часах" value="{{ emp_roles_post|get_hird:er.pk }}" class="{% if emp_roles_post|get_nothing_hird:er.pk %}dont_valid{% endif %}">
-
-					        	{% if emp_roles_post|get_nothing_hird:er.pk or emp_roles_post|get_nothing_quan:er.pk %}
-					        	<label for="{% if emp_roles_post|get_nothing_hird:er.pk %}er_hird_{{er.pk}}{% else %}er_quan_{{er.pk}}{% endif %}" class="dont_valid_label">Поле должно быть заполнено.</label>
-					        	{% endif %}
-					        </li>
-					        {% endfor %}
-				        </ul>
-			        </div>
-
-					<div class="mini_card">
-				        <h3>Транспорт</h3>
-				        <ul>
-				        	{% if nothing_mode_transport %}
-				        		<p class="dont_valid_label">Необходимо выбрать хотя бы одно транспортное средство.</p>
-				        	{% endif %}
-					        {% for mt in mode_transports %}
-					        <li>
-					        	<label for="mt_quan_{{ mt.pk }}">{{ mt }}</label>
-					        	<input id="mt_quan_{{ mt.pk }}" name="mt_quan_{{ mt.pk }}" type="number" min="0" placeholder="Количество" title="Введите требуемое количество персонала" value="{{ mode_transport_post|get_quan:mt.pk }}" class="{% if mode_transport_post|get_nothing_quan:mt.pk %}dont_valid{% endif %}">
-					        	<input id="mt_hird_{{ mt.pk }}" name="mt_hird_{{ mt.pk }}" type="number" min="0" placeholder="Время найма (в часах)" title="Введите требуемое время найма в часах" value="{{ mode_transport_post|get_hird:mt.pk }}" class="{% if mode_transport_post|get_nothing_hird:mt.pk %}dont_valid{% endif %}">
-
-					        	{% if mode_transport_post|get_nothing_hird:mt.pk or mode_transport_post|get_nothing_quan:mt.pk %}
-					        	<label for="{% if mode_transport_post|get_nothing_hird:mt.pk %}mt_hird_{{mt.pk}}{% else %}mt_quan_{{mt.pk}}{% endif %}" class="dont_valid_label">Поле должно быть заполнено.</label>
-					        	{% endif %}
-					        </li>
-					        {% endfor %}
-				        </ul>
-					</div>
-
-					<div class="mini_card">
-			        	<h3>Упаковочный материал</h3>
-				        <ul>
-				        	{% for tp, packing in type_packings_with_packings.items %}
-					        	{% if packing %}
-					        	<li>{{ tp }}
-						        	<ul>
-						        		{% for p in packing %}
-						        			<li>
-						        				{{ p.name }}
-						        				<input name="p_{{p.pk}}" type="number" min="0" placeholder="Количество" title="Введите требуемое количество упаковочного материала" value="{{packing_post|get:p.pk}}">
-						        			</li>
-						        		{% endfor %}
-					        		</ul>
-					        	</li>
-					        	{% endif %}
-				        	{% endfor %}
-				        </ul>
-			    	</div>
-		    	</div>
-		    	{{ help_text }}
-			    <input class="abtn btnfocus" type="submit" value="Оставить заявку">
-			</form>
-		{% if type_packings_with_packings and mode_transports and employee_roles %}
-		{% else %}
-			<h2>Отсутствие значений для формирования правльного заказа</h2>
-    		<p>К сожалению, что-то пошло не так, обратитесь в службу тех. поддежрки, или обратитесь в наш колл-центр для формирования заказа через телефон.</p>
+                            {% if not r.2 or not r.3%}
+                            <label for="{% if not r.2 %}point_a{% else %}point_b{% endif %}{{forloop.counter0}}" class="dont_valid_label">Поле должно быть заполнено.</label>
+                            {% endif %}
+                        </li>
+                        {% endfor %}
+                    </ul>
+                    <input id="add_route" class="abtn" type="button" value="Добавить">
+                </div>
+                <div class="personal_and_transport">
+                    <h3>Персонал</h3>
+                    {% load order_extras %}
+                    {% for er in employee_roles %}
+                    <div class="row_content_newrequestmove">
+                        <div class="img_and_describtion_row_content_newrequestmove">
+                            <label for="er_quan_{{ er.pk }}">{% if er.image %}<img src="{{er.image.url}}">{% else %}<img>{% endif %}</label>
+                            <div class="describtion_row_content_newrequestmove">
+                                <h3><label for="er_quan_{{ er.pk }}">{{ er }}</label></h3>
+                                <p>{{er.description}}</p>
+                            </div>
+                        </div>
+                        <div class="input_row_content_newrequestmove">
+                            <div>
+                                <label for="er_quan_{{ er.pk }}">Количество:</label>
+                                <input id="er_quan_{{ er.pk }}" name="er_quan_{{ er.pk }}" type="number" min="0" placeholder="Количество" title="Введите требуемое количество персонала" value="{{ emp_roles_post|get_quan:er.pk }}" class="{% if emp_roles_post|get_nothing_quan:er.pk %}dont_valid{% endif %}">
+                            </div>
+                            <div>
+                                <label for="er_hird_{{ er.pk }}">Время:</label>
+                                <input id="er_hird_{{ er.pk }}" name="er_hird_{{ er.pk }}" type="number" min="0" placeholder="Время найма (в часах)" title="Введите требуемое время найма в часах" value="{{ emp_roles_post|get_hird:er.pk }}" class="{% if emp_roles_post|get_nothing_hird:er.pk %}dont_valid{% endif %}">
+                            </div>
+                            {% if emp_roles_post|get_nothing_hird:er.pk or emp_roles_post|get_nothing_quan:er.pk %}
+                            <label for="{% if emp_roles_post|get_nothing_hird:er.pk %}er_hird_{{er.pk}}{% else %}er_quan_{{er.pk}}{% endif %}" class="dont_valid_label">Поле должно быть заполнено.</label>
+                            {% endif %}
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+                <div class="personal_and_transport">
+                    <h3>Транспорт</h3>
+                    {% if nothing_mode_transport %}
+                    <p class="dont_valid_label">Необходимо выбрать хотя бы одно транспортное средство.</p>
+                    {% endif %}
+                    {% for mt in mode_transports %}
+                    <div class="row_content_newrequestmove">
+                        <div class="img_and_describtion_row_content_newrequestmove">
+                            <label for="mt_quan_{{ mt.pk }}">{% if mt.image %}<img src="{{mt.image.url}}">{% else %}<img>{% endif %}</label>
+                            <div class="describtion_row_content_newrequestmove">
+                                <h3><label for="mt_quan_{{ mt.pk }}">{{ mt }}</label></h3>
+                                <p>{{mt.description}}</p>
+                            </div>
+                        </div>
+                        <div class="input_row_content_newrequestmove">
+                            <div>
+                                <label for="mt_quan_{{ mt.pk }}">Количество:</label>
+                                <input id="mt_quan_{{ mt.pk }}" name="mt_quan_{{ mt.pk }}" type="number" min="0" placeholder="Количество" title="Введите требуемое количество персонала" value="{{ mode_transport_post|get_quan:mt.pk }}" class="{% if mode_transport_post|get_nothing_quan:mt.pk %}dont_valid{% endif %}">
+                            </div>
+                            <div>
+                                <label for="mt_hird_{{ mt.pk }}">Время:</label>
+                                <input id="mt_hird_{{ mt.pk }}" name="mt_hird_{{ mt.pk }}" type="number" min="0" placeholder="Время найма (в часах)" title="Введите требуемое время найма в часах" value="{{ mode_transport_post|get_hird:mt.pk }}" class="{% if mode_transport_post|get_nothing_hird:mt.pk %}dont_valid{% endif %}">
+                            </div>
+                            {% if mode_transport_post|get_nothing_hird:mt.pk or mode_transport_post|get_nothing_quan:mt.pk %}
+                            <label for="{% if mode_transport_post|get_nothing_hird:mt.pk %}mt_hird_{{mt.pk}}{% else %}mt_quan_{{mt.pk}}{% endif %}" class="dont_valid_label">Поле должно быть заполнено.</label>
+                            {% endif %}
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+                <div class="personal_and_transport">
+                    <h3>Упаковочный материал</h3>
+                    {% for tp, packing in type_packings_with_packings.items %}
+                    {% if packing %}
+                    <h4>-{{ tp }}-</h4>
+                    {% for p in packing %}
+                    <div class="row_content_newrequestmove newreq_packing">
+                        <div class="img_and_describtion_row_content_newrequestmove">
+                            <label for="p_{{p.pk}}">{% if p.image %}<img src="{{p.image.url}}">{% else %}<img>{% endif %}</label>
+                            <div class="describtion_row_content_newrequestmove">
+                                <h4><label for="p_{{p.pk}}">{{ p.name }}</label></h4>
+                                <p>{{p.description}}</p>
+                            </div>
+                        </div>
+                        <div class="input_row_content_newrequestmove">
+                            <div>
+                                <label for="p_{{p.pk}}">Количество:</label>
+                                  <input id="p_{{p.pk}}" name="p_{{p.pk}}" type="number" min="0" placeholder="Количество" title="Введите требуемое количество упаковочного материала" value="{{packing_post|get:p.pk}}">
+                                <span>{{p.unit}}</span>
+                            </div>
+                        </div>
+                    </div>
+                    {% endfor %}
+                    {% endif %}
+                    {% endfor %}
+                </div>
+            </div>
+            <p>{{ help_text }}</p>
+            <input class="abtn btnfocus" type="submit" value="Оставить заявку">
+            
+        </form>
+        {% if type_packings_with_packings and mode_transports and employee_roles %}
+        {% else %}
+        <h2>Отсутствие значений для формирования правльного заказа</h2>
+        <p>К сожалению, что-то пошло не так, обратитесь в службу тех. поддежрки, или обратитесь в наш колл-центр для формирования заказа через телефон.</p>
         {% endif %}
-	</div>
+    </div>
 </main>
 {% endblock %}

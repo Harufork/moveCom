@@ -1,0 +1,150 @@
+{% extends 'orders/base_detail_order.html' %}
+{% block data %}
+
+<p>{{verbose.move_request}}: <a href="{{ object.move_request.get_absolute_url }}">{{ object.move_request }}</a></p>
+<p>Заказ на переезд: <a href="{{ object.get_absolute_url }}">{{ object }}</a></p>
+
+
+
+
+
+<div class="btm_order_panel">
+{% if object.is_confirm %}
+
+    {% if perms.orders.in_progress_move_request and not object.is_completed and not object.is_in_progress %}
+  <form action="{% url 'in_progress_move_order' %}" method="POST">
+      {% csrf_token %}
+      <input type="hidden" name="ordmoveid" value="{{ object.pk }}">
+      <input class="abtn btnfocus" type="submit" value="Начать выполнение заказа">
+  </form>
+  {% endif %}
+
+      {% if perms.orders.completed_move_request and object.is_in_progress %}
+  <form action="{% url 'completed_move_order' %}" method="POST">
+      {% csrf_token %}
+      <input type="hidden" name="ordmoveid" value="{{ object.pk }}">
+      <input class="abtn btnfocus" type="submit" value="Завершить заказ">
+  </form>
+  {% endif %}
+
+    {% if perms.orders.cancel_move_order%}
+  <form action="{% url 'cancel_move_order' %}" method="POST">
+      {% csrf_token %}
+      <input type="hidden" name="ordmoveid" value="{{ object.pk }}">
+      <input class="abtn" type="submit" value="Отменить заказ">
+  </form>
+  {% endif %}
+
+{% endif %}
+</div>
+
+<p>{{verbose.status}}: {{ object.move_request.get_status_display }}</p>
+
+<p>{{verbose.time_type}}: {{ object.move_request.get_time_type_display }}</p>
+<p>{{verbose.date_of_completion}}: {{ object.move_request.date_of_completion }}</p>
+
+{% if object.move_request.time_of_completion %}
+<p>{{verbose.time_of_completion}}: {{ object.move_request.time_of_completion }}</p>
+{% endif %}
+
+<p>{{verbose.full_name}}: {{ object.move_request.full_name }}</p>
+<p>{{verbose.phone_number}}: {{ object.move_request.phone_number }}</p>
+
+
+<p>{{verbose.payment_type}}: {{ object.move_request.get_payment_type_display }}</p>
+
+<p>{{verbose.total_cost}}: {{ object.total_cost }} руб.</p>
+<p>{{verbose.comment}}: {{ object.move_request.comment }}</p>
+
+{% if bool_perm_routs.view %}
+<h3>Маршруты</h3>
+<table class="table">
+    <tr>
+        <th></th>
+        <th>Из</th>
+        <th>Куда</th>
+        <th>Дистанция</th>
+        <th></th>
+    </tr>
+    {%for rowobj in routs %}
+    <tr>
+        <td>{{forloop.counter}}</td>
+        <td>{{rowobj.point_a}}</td>
+        <td>{{rowobj.point_b}}</td>
+        <td>{{rowobj.distance}} км.</td>
+        <td class="btn_table"><a href="{{ rowobj.get_absolute_url }}">➥Подробнее</a></td>
+    </tr>
+    {% endfor %}
+</table>
+{% endif %}
+{% if bool_perm_employees.view %}
+{% if employees %}
+<h3>Персонал</h3>
+<table class="table">
+    <tr>
+        <th></th>
+        <th>Выполняет</th>
+        <th>Роль</th>
+        <th>Найм на</th>
+        <th></th>
+    </tr>
+    {%for rowobj in employees %}
+    <tr>
+        <td>{{forloop.counter}}</td>
+        <td><a href="">{{rowobj.employee}}</a></td>
+        <td><a href="">{{rowobj.group}}</a></td>
+        <td>{{rowobj.hired_hours}} ч.</td>
+        <td class="btn_table"><a href="{{ rowobj.get_absolute_url }}">➥Подробнее</a></td>
+    </tr>
+    {% endfor %}
+</table>
+{% endif %}
+{% endif %}
+{% if bool_perm_transports.view %}
+{% if transports %}
+<h3>Транспорт</h3>
+<table class="table">
+    <tr>
+        <th></th>
+        <th>Транспорт</th>
+        <th>Вид транспорта</th>
+        <th>Найм на</th>
+        <th></th>
+    </tr>
+    {%for rowobj in transports %}
+    <tr>
+        <td>{{forloop.counter}}</td>
+        <td><a href="{{rowobj.transport.get_absolute_url}}">{{rowobj.transport}}</a></td>
+        <td><a href="{{rowobj.mode_transport.get_absolute_url}}">{{rowobj.mode_transport}}</a></td>
+        <td>{{rowobj.hired_hours}} ч.</td>
+        <td class="btn_table"><a href="{{ rowobj.get_absolute_url }}">➥Подробнее</a></td>
+    </tr>
+    {% endfor %}
+</table>
+{% endif %}
+{% endif %}
+{% if bool_perm_packings.view %}
+{% if packings %}
+<h3>Заказанная упаковка</h3>
+<p>{{verbose.receiving_packaging}}: {{ object.move_request.get_receiving_packaging_display }}</p>
+<table class="table">
+    <tr>
+        <th></th>
+        <th>Упаковка</th>
+        <th>Кол-во</th>
+        <th>Ед. изм.</th>
+        <th></th>
+    </tr>
+    {%for rowobj in packings %}
+    <tr>
+        <td>{{forloop.counter}}</td>
+        <td><a href="{{rowobj.packing.get_absolute_url}}">{{rowobj.packing}}</a></td>
+        <td>{{rowobj.total}}</td>
+        <td><a href="{{rowobj.packing.unit.get_absolute_url}}">{{rowobj.packing.unit}}</a></td>
+        <td class="btn_table"><a href="{{ rowobj.get_absolute_url }}">➥Подробнее</a></td>
+    </tr>
+    {% endfor %}
+</table>
+{% endif %}
+{% endif %}
+{% endblock %}

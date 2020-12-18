@@ -1,9 +1,12 @@
-$(document).ready(function(){
-	$('.mask-phone').mask('+7 (999) 999-99-99');
 	$(".mainpanel").hide();
 	$(".additionallylist").hide();
 	$(".accbtms").hide();
 	$(".notificationdiv").hide();
+$(document).ready(function(){
+
+
+	$('.mask-phone').mask('+7(999)999-99-99');
+
 
 	
 	$(".hidepanel").click(function(){
@@ -46,19 +49,28 @@ $(document).ready(function(){
 		},300);
 	});
 
-	
+
+	function showNewContent() {
+ 		$('.notificationlist').show('normal',hideLoader)
+	}
+
+	function hideLoader() {
+ 		$('.notificationlist').fadeOut('normal');
+	}
+
+	function loadContent() {
+ 		
+	}
+
+
+
 	$(".hidenotificationlist").click(function(){
 		$(".notificationdiv").animate({
 			top: "toggle",
 			height: "toggle"
 		},250, "linear");
 	});
-	$(".notification").click(function(){
-		$(".notificationdiv").animate({
-			top: "toggle",
-			height: "toggle"
-		}, 250, "linear");
-	});
+
 
 	var toc = $('.newrequestmove').find('input[name=time_of_completion]');
 	var tp =$('.newrequestmove').find('select[name=time_type]');

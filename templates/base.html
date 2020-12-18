@@ -1,113 +1,115 @@
 <!DOCTYPE html>
-
 <html lang="ru">
+
 <head>
-	<meta http-equiv="Cache-Control" content="no-cache"/>
+    <meta http-equiv="Cache-Control" content="no-cache" />
     <meta charset="UTF-8">
-
     <title>{{ title }} - Время переезда</title>
-
-
-	{% load static %}
-	<link rel="stylesheet" type="text/css" href="{% static 'css/style.css' %}?4" >
-	<link rel="short icon" type="image/x-icon" href="{% static 'image/favicon.ico' %}" >
-
+    {% load static %}
+    <link rel="stylesheet" type="text/css" href="{% static 'css/style.css' %}?4">
+    <link rel="short icon" type="image/x-icon" href="{% static 'image/favicon.ico' %}">
 </head>
-<body>
-	<header>
-		<div class="leftheaderinfo">
-			<a href="{% url 'home' %}" class="logo"><img src="{% static 'image/logo.png' %}" alt="no logo"></a>
-			<div class="navigation">
-				{% if user.is_staff %}
-					<a href="{% url 'newrequestmove' %}">Оформить заказ</a>
-					<a href="#">Помощь с переездом</a>
-					<a href="#">Поддержка</a>
-					<a href="{% url 'faq' %}">FAQ</a>
-					<button class="additionally">Ещё ▽</button>
-				{% else %}
-					<a href="{% url 'newrequestmove' %">Оформить заказ</a>
-					<a href="#">Помощь с переездом</a>
-					<a href="#">Поддержка</a>
-					<a href="{% url 'faq' %}">FAQ</a>
-				{% endif %} 
-			</div>
-		</div>
-		
-		<div class="accountInfo">
-			{% if user.is_authenticated %}
-				<button class="notification active">🕭<div></div></button>
-				<button class="accountbtm">
-					{% if user.is_staff %}
-						<p class="role">cотрудник</p>
-					{% endif %}
-					{% if user.first_name or user.last_name %}
-						<p>{{user.first_name}} {{user.last_name}}</p>
-					{% else %}
-						<p>{{user.get_username}}</p>
-					{% endif %}
-				</button>		
-			{% else %}
-				<a class="abtn btnheader" href="{% url 'login'%}?next={{request.path}}">Войти</a>
-				<a class="abtn btnfocus btnheader" href="#">Регистрация</a>
-			{% endif %} 
-		</div>
-	</header>
-	
-	{% if user.is_authenticated %}
-		<div class="additionallylist">
-			<a href="{% url 'navigation' %}">Навигация</a>
-		</div>
-		<div class="accbtms">
-			<button class="hideabtn abtn">▲</button>
-			<a href="{% url 'logout'%}?next={{request.path}}">Выйти</a>
-			<a href="#">Настройки</a>
-			<a href="#">Профиль</a>
-			{% if user.is_staff %}
-				<a href="#">Профиль сотрудника</a>
-			{% endif %} 
-		</div>	
-		<div class="notificationdiv">
-			<button class="hidenotificationlist abtn">▲</button>
-			<div class="notificationlist">
-				<table>
-					<tr class="newnotification"><td>14:40 24 окт. 2020</td><td>Новый статус у заказа <a href="#">№223423532523522523253225352</a></td></tr>
-					<tr><td>14:40</td><td>Примите участие в новой акции! <a href="#">*ТЫК*</a></td></tr>
-					<tr><td>14:40</td><td>Новый статус у заказа</td></tr>
-					<tr><td>14:40</td><td>Новый статус у заказа</td></tr>
-					<tr><td>14:40</td><td>Новый статус у заказа</td></tr>
-					<tr><td>14:40</td><td>Новый статус у заказа</td></tr>
-					<tr><td>14:40</td><td>Новый статус у заказа</td></tr>
-					<tr><td>14:40</td><td>Новый статус у заказа</td></tr>
-				</table>
-			</div>
-		</div>
-	{% endif %}
 
+<body>
+    <header>
+        <div class="leftheaderinfo">
+            <a href="{% url 'home' %}" class="logo"><img src="{% static 'image/logo.png' %}" alt="no logo"></a>
+            <div class="navigation">
+                {% if user.is_staff %}
+                <a href="{% url 'navigation' %}">Навигация</a>
+                <a href="{% url 'moveorder_executor_list' %}">Выполнение заказов</a>
+                <a href="{% url 'moverequest_list_for_confirm' %}">Подтверждение заявок</a>
+                <button class="additionally">Ещё ▽</button>
+                {% else %}
+                <a href="{% url 'newrequestmove' %}">Оформить заказ</a>
+                <a href="#">Помощь с переездом</a>
+                <a href="#">Поддержка</a>
+                <a href="{% url 'faq' %}">FAQ</a>
+                {% endif %}
+            </div>
+        </div>
+        <div class="accountInfo">
+            {% if user.is_authenticated %}
+            <button class="notification active">🕭<div></div></button>
+            <button class="accountbtm">
+                {% if user.is_staff %}
+                <p class="role">cотрудник</p>
+                {% endif %}
+                {% if user.first_name or user.last_name %}
+                <p>{{user.first_name}} {{user.last_name}}</p>
+                {% else %}
+                <p>{{user.get_username}}</p>
+                {% endif %}
+            </button>
+            {% else %}
+            <a class="abtn btnheader" href="{% url 'login'%}?next={{request.path}}">Войти</a>
+            <a class="abtn btnfocus btnheader" href="{% url 'registration' %}">Регистрация</a>
+            {% endif %}
+        </div>
+    </header>
+    {% if user.is_authenticated %}
+    <div class="additionallylist">
+        <a href="{% url 'newrequestmove' %}">Оформить заказ</a>
+        <a href="#">Помощь с переездом</a>
+        <a href="#">Поддержка</a>
+        <a href="{% url 'faq' %}">FAQ</a>
+    </div>
+    <div class="accbtms">
+        <button class="hideabtn abtn">▲</button>
+        <a href="{% url 'logout'%}?next={{request.path}}">Выйти</a>
+        <a href="#">Настройки</a>
+        <a href="#">Профиль</a>
+        {% if user.is_staff %}
+        <a href="#">Профиль сотрудника</a>
+        {% endif %}
+    </div>
+    <div class="notificationdiv hiden">
+        <button class="hidenotificationlist abtn">▲</button>
+        <div class="notificationlist">
+
+        </div>
+    </div>
+    {% endif %}
     {% block content %}
     {% endblock %}
-
     <footer>
-    	<div class="footerleftdiv">
-    		<a class="footerlogo" href="{% url 'home' %}"><img src="{% static 'image/logo.png' %}" alt="no logo"></a> 
-    		<div class="footernavigation">
-	    		<a href="#">Оформить заказ</a>
-				<a href="#">Помощь с переездом</a>
-				<a href="#">Поддержка</a>
-				<a href="{% url 'faq' %}">FAQ</a>
-    		</div>
-    	</div>
-    	<p class="ooo">© 2019 – 2020 ООО «Время переезда»</p>
-    	<div class="footersoc">
-    		<div>
-	    		<p>Мы в</p>
-				<a class="vk" href="https://vk.com/harufork">Вконтакте</a>
-				<a class="instagram" href="https://www.instagram.com/harufork/">Instagram</a>
-    		</div>
-    	</div>
-	</footer>
+        <div class="footerleftdiv">
+            <a class="footerlogo" href="{% url 'home' %}"><img src="{% static 'image/logo.png' %}" alt="no logo"></a>
+            <div class="footernavigation">
+                <a href="{% url 'newrequestmove' %}">Оформить заказ</a>
+                <a href="#">Помощь с переездом</a>
+                <a href="#">Поддержка</a>
+                <a href="{% url 'faq' %}">FAQ</a>
+            </div>
+        </div>
+        <p class="ooo">© 2019 – 2020 ООО «Время переезда»</p>
+        <div class="footersoc">
+            <div>
+                <p>Мы в</p>
+                <a class="vk" href="https://vk.com/harufork">Вконтакте</a>
+                <a class="instagram" href="https://www.instagram.com/harufork/">Instagram</a>
+            </div>
+        </div>
+    </footer>
+    <script type="text/javascript" src="{% static 'js/jquery.js' %}"></script>
+        <script type="text/javascript">
 
-	<script type="text/javascript" src="{% static 'js/jquery.js' %}"></script>
-	<script type="text/javascript" src="{% static 'js/jquery.maskedinput.min.js' %}"></script>
-	<script type="text/javascript" src="{% static 'js/style.js' %}"></script>
+    </script>
+    <script type="text/javascript" src="{% static 'js/jquery.maskedinput.min.js' %}"></script>
+    <script type="text/javascript" src="{% static 'js/style.js' %}"></script>
+    <script type="text/javascript">
+            $(document).ready(function(){
+                $(".notification").click(function(){
+            $(".notificationdiv").animate({
+                top: "toggle",
+                height: "toggle"
+            }, 250, "linear");
+            // $(".notificationlist").text('Загрузка...');
+            $('.notificationlist').load("{% url 'notification_list' %}").fadeIn('slow');
+        });
+        });
+    </script>
+
 </body>
+
 </html>

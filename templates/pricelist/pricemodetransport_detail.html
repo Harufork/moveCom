@@ -1,5 +1,9 @@
 {% extends 'base_detail.html' %}
 
 {% block data %}
-  	<p>{{verbose.total_cost}}: {{ object.total_cost }}</p>
+  	<p>{{verbose.cost}}: {{ object.cost }}</p>
+  	<p>{{verbose.creater}}: {{ object.creater }}</p>
+  	<p>{{verbose.date_of_creation}}: {{ object.date_of_creation }}</p>
+  	<p>{{verbose.effective_date}}: {{ object.effective_date }}</p>
+  	<p>{{verbose.mode_transport}}: {{ object.mode_transport }}</p>
 {% endblock %}

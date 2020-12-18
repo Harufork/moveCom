@@ -1,0 +1,14 @@
+{% extends 'base_detail.html' %}
+
+{% block data %}
+
+	<p>{{verbose.user}}: <a href="">{{ object.user }}</a></p>
+
+	<p>{{verbose.available}}: {% if object.available %}
+		Да
+	{% else %}
+		Нет
+	{% endif %}
+	</p>
+
+{% endblock %}

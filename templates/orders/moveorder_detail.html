@@ -1,7 +1,197 @@
-{% extends 'base_detail.html' %}
-
+{% extends 'orders/base_detail_order.html' %}
 {% block data %}
-  	<p>{{verbose.move_request}}: {{ object.move_request }}</p>
-  	<p>{{verbose.date_of_confirm}}: {{ object.date_of_confirm }}</p>
-  	<p>{{verbose.total_cost}}: {{ object.total_cost }}</p>
+<p>{{verbose.move_request}}: <a href="{{ object.move_request.get_absolute_url }}">{{ object.move_request }}</a></p>
+
+
+<div class="btm_order_panel">
+{% if not object.is_completed and not object.is_canceled %}
+
+
+
+{% if object.is_confirm %}
+
+  {% if perms.orders.cancel_move_order%}
+  <form action="{% url 'cancel_move_order' %}" method="POST">
+      {% csrf_token %}
+      <input type="hidden" name="ordmoveid" value="{{ object.pk }}">
+      <input class="abtn" type="submit" value="Отменить заказ">
+  </form>
+  {% endif %}
+
+{% else %}
+
+  {% if perms.orders.confirm_move_order%}
+  <form action="{% url 'confirm_move_order' %}" method="POST">
+      {% csrf_token %}
+      <input type="hidden" name="ordmoveid" value="{{ object.pk }}">
+      <input class="abtn btnfocus" type="submit" value="Подтвердить заказ">
+  </form>
+  {% endif %}
+
+  {% if bool_perm_of_user.change %}
+    <a class="abtn" href="{{buttons_urls.change}}">Редактировать</a>
+  {% endif %}
+
+    {% if bool_perm_of_user.change %}
+      <form action="{% url 'calc_total_cost_of_move_order' %}" method="POST">
+      {% csrf_token %}
+      <input type="hidden" name="ordmoveid" value="{{ object.pk }}">
+      <input class="abtn" type="submit" value="Пересчитать итоговую цену">
+  </form>
+  {% endif %}
+
+    {% if perms.orders.rejection_move_request%}
+    <form action="{% url 'rejection_move_request' %}" method="POST">
+        {% csrf_token %}
+        <input type="hidden" name="reqmoveid" value="{{ object.move_request.pk }}">
+        <input class="abtn" type="submit" value="Отклонить заказ">
+    </form>
+    {% endif %}
+  {% endif %}
+
+{% endif%}
+
+{% if bool_perm_of_user.delete %}
+<a class="abtn" href="{{buttons_urls.delete}}">Удалить</a>
+{% endif %}
+</div>
+{% if object.is_confirm %}
+<p>{{verbose.date_of_confirm}}: {{ object.date_of_confirm }}</p>
+{% endif %}
+
+<p>{{verbose.status}}: {{ object.move_request.get_status_display }}</p>
+<p>{{verbose.total_cost}}: {{ object.total_cost }} руб.</p>
+{% if bool_perm_routs.view %}
+<h3>Маршруты</h3>
+<table class="table">
+    <tr>
+        <th></th>
+        <th>Из</th>
+        <th>Куда</th>
+        <th>Дистанция</th>
+        <th></th>
+        {% if bool_perm_routs.change %}
+        <th></th>
+        {% endif %}
+        {% if bool_perm_routs.delete %}
+        <th></th>
+        {% endif %}
+    </tr>
+    {%for rowobj in routs %}
+    <tr>
+        <td>{{forloop.counter}}</td>
+        <td>{{rowobj.point_a}}</td>
+        <td>{{rowobj.point_b}}</td>
+        <td>{{rowobj.distance}} км.</td>
+        <td class="btn_table"><a href="{{ rowobj.get_absolute_url }}">➥Подробнее</a></td>
+        {% if bool_perm_routs.change %}
+        <td class="btn_table"><a title="Изменить объект" href="{% url buttons_routs_urls.abstract_change rowobj.pk %}">✐Ред</a></td>
+        {% endif %}
+        {% if bool_perm_routs.delete %}
+        <td class="btn_table"><a class="del_table" href="{% url buttons_routs_urls.abstract_delete rowobj.pk %}" title="Удалить">🗑</a></td>
+        {% endif %}
+    </tr>
+    {% endfor %}
+</table>
+{% endif %}
+{% if bool_perm_employees.view %}
+<h3>Персонал</h3>
+<table class="table">
+    <tr>
+        <th></th>
+        <th>Выполняет</th>
+        <th>Роль</th>
+        <th>Найм на</th>
+        <th></th>
+        {% if bool_perm_employees.change %}
+        <th></th>
+        {% endif %}
+        {% if bool_perm_employees.delete %}
+        <th></th>
+        {% endif %}
+    </tr>
+    {%for rowobj in employees %}
+    <tr>
+        <td>{{forloop.counter}}</td>
+        <td><a href="">{{rowobj.employee}}</a></td>
+        <td><a href="">{{rowobj.group}}</a></td>
+        <td>{{rowobj.hired_hours}} ч.</td>
+        <td class="btn_table"><a href="{{ rowobj.get_absolute_url }}">➥Подробнее</a></td>
+        {% if bool_perm_employees.change %}
+        <td class="btn_table"><a title="Изменить объект" href="{% url buttons_employees_urls.abstract_change rowobj.pk %}">✐Ред</a></td>
+        {% endif %}
+        {% if bool_perm_employees.delete %}
+        <td class="btn_table"><a class="del_table" href="{% url buttons_employees_urls.abstract_delete rowobj.pk %}" title="Удалить">🗑</a></td>
+        {% endif %}
+    </tr>
+    {% endfor %}
+</table>
+{% endif %}
+{% if bool_perm_transports.view %}
+<h3>Транспорт</h3>
+<table class="table">
+    <tr>
+        <th></th>
+        <th>Транспорт</th>
+        <th>Вид транспорта</th>
+        <th>Найм на</th>
+        <th></th>
+        {% if bool_perm_transports.change %}
+        <th></th>
+        {% endif %}
+        {% if bool_perm_transports.delete %}
+        <th></th>
+        {% endif %}
+    </tr>
+    {%for rowobj in transports %}
+    <tr>
+        <td>{{forloop.counter}}</td>
+        <td><a href="{{rowobj.transport.get_absolute_url}}">{{rowobj.transport}}</a></td>
+        <td><a href="{{rowobj.mode_transport.get_absolute_url}}">{{rowobj.mode_transport}}</a></td>
+        <td>{{rowobj.hired_hours}} ч.</td>
+        <td class="btn_table"><a href="{{ rowobj.get_absolute_url }}">➥Подробнее</a></td>
+        {% if bool_perm_transports.change %}
+        <td class="btn_table"><a title="Изменить объект" href="{% url buttons_transports_urls.abstract_change rowobj.pk %}">✐Ред</a></td>
+        {% endif %}
+        {% if bool_perm_transports.delete %}
+        <td class="btn_table"><a class="del_table" href="{% url buttons_transports_urls.abstract_delete rowobj.pk %}" title="Удалить">🗑</a></td>
+        {% endif %}
+    </tr>
+    {% endfor %}
+</table>
+{% endif %}
+{% if bool_perm_packings.view %}
+<h3>Заказанная упаковка</h3>
+<p>{{verbose.receiving_packaging}}: {{ object.move_request.get_receiving_packaging_display }}</p>
+<table class="table">
+    <tr>
+        <th></th>
+        <th>Упаковка</th>
+        <th>Кол-во</th>
+        <th>Ед. изм.</th>
+        <th></th>
+        {% if bool_perm_packings.change %}
+        <th></th>
+        {% endif %}
+        {% if bool_perm_packings.delete %}
+        <th></th>
+        {% endif %}
+    </tr>
+    {%for rowobj in packings %}
+    <tr>
+        <td>{{forloop.counter}}</td>
+        <td><a href="{{rowobj.packing.get_absolute_url}}">{{rowobj.packing}}</a></td>
+        <td>{{rowobj.total}}</td>
+        <td><a href="{{rowobj.packing.unit.get_absolute_url}}">{{rowobj.packing.unit}}</a></td>
+        <td class="btn_table"><a href="{{ rowobj.get_absolute_url }}">➥Подробнее</a></td>
+        {% if bool_perm_packings.change %}
+        <td class="btn_table"><a title="Изменить объект" href="{% url buttons_packings_urls.abstract_change rowobj.pk %}">✐Ред</a></td>
+        {% endif %}
+        {% if bool_perm_packings.delete %}
+        <td class="btn_table"><a class="del_table" href="{% url buttons_packings_urls.abstract_delete rowobj.pk %}" title="Удалить">🗑</a></td>
+        {% endif %}
+    </tr>
+    {% endfor %}
+</table>
+{% endif %}
 {% endblock %}

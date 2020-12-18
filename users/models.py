@@ -5,6 +5,7 @@ from django.dispatch import receiver
 from config.settings import DATETIME_FORMAT
 from django.urls import reverse
 
+
 class Profile(models.Model):
     """Дополнительная информация для пользователей"""
     user = models.OneToOneField(User, on_delete=models.CASCADE,
@@ -65,13 +66,17 @@ class Employee(models.Model):
         verbose_name_plural = "Профили сотрудников"
 
     def __str__(self):
-        try:
-            patronymic = " " + self.user.profile.patronymic
-        except Profile.DoesNotExist:
-            patronymic = ""
-        return f"{'Активен' if self.available else 'Не активен'}: " \
-               f"{self.user.first_name} {self.user.last_name}" \
-               f"{patronymic}"
+        if self.user.first_name or self.user.last_name:
+            try:
+                patronymic = " " + self.user.profile.patronymic
+            except Profile.DoesNotExist:
+                patronymic = ""
+
+            return f"{'Активен' if self.available else 'Не активен'}: " \
+                   f"{self.user.first_name} {self.user.last_name}" \
+                   f"{patronymic}"
+        else:
+            return f"{'Активен' if self.available else 'Не активен'}: {self.user.get_username()}"
 
     def get_absolute_url(self):
         return reverse('employee', args=[self.pk])
@@ -98,6 +103,10 @@ class EmployeeRole(models.Model):
     """Дополнительная информация для group"""
     group = models.OneToOneField(Group, on_delete=models.CASCADE,
                                  verbose_name="Группа")
+    image = models.ImageField(upload_to="static/image/data/employeerole",
+                              verbose_name="Изображение",
+                              blank=True)
+    description = models.TextField(verbose_name="Описание", blank=True)
     available = models.BooleanField(verbose_name="Активна", default=False)
     available_in_order = models.BooleanField(verbose_name="Найм в заказе на переезд", default=False,
                                            help_text="Доступен для найма клиентом в заказе на переезд")
@@ -126,12 +135,12 @@ class Notification(models.Model):
     viewed = models.BooleanField(verbose_name="Просмотрено", default=False)
 
     class Meta:
-        ordering = ["date_of_creation"]  # сортировка при выводе
+        ordering = ["viewed", "-date_of_creation"]  # сортировка при выводе
         verbose_name = "Уведомление"
         verbose_name_plural = "Уведомления"
 
     def __str__(self):
-        return f"{format(self.date_of_creation, DATETIME_FORMAT)} - {self.user}"
+        return f"{format(self.date_of_creation, DATETIME_FORMAT)} - {self.user}: {self.content}"
 
     def get_absolute_url(self):
         return reverse('notification', args=[self.pk])

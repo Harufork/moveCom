@@ -1,0 +1,18 @@
+{% extends 'base.html' %}
+{% block content %}
+<main>
+    <div class="card registration">
+        <h3 class="heading-page">Регистрация</h3>
+        <form method="post" action="">
+            {% csrf_token %}
+           
+            <table>
+                {{form}}
+            </table>
+
+            <input type="submit" value="Зарегистрироваться" class="abtn btnfocus" />
+        </form>
+
+    </div>
+</main>
+{% endblock %}

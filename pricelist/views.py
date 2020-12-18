@@ -14,7 +14,8 @@ class PriceRoleViewList(LoginRequiredMixin, UserIsStaff, PermissionRequiredMixin
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context.update(get_context_for_view_list(PriceRole, self.request.user, 'pricelist', 'total_cost'))
+        context.update(get_context_for_view_list(PriceRole, self.request.user, 'pricelist', 'cost', 'creater',
+                                                 'date_of_creation','effective_date','group'))
         return context
 
 
@@ -77,7 +78,8 @@ class PriceModeTransportViewList(LoginRequiredMixin, UserIsStaff, PermissionRequ
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context.update(get_context_for_view_list(PriceModeTransport, self.request.user, 'pricelist', 'total_cost'))
+        context.update(get_context_for_view_list(PriceModeTransport, self.request.user, 'pricelist', 'cost', 'creater',
+                                                 'date_of_creation','effective_date','mode_transport'))
         return context
 
 
@@ -140,7 +142,8 @@ class PriceModeTDistanceViewList(LoginRequiredMixin, UserIsStaff, PermissionRequ
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context.update(get_context_for_view_list(PriceModeTDistance, self.request.user, 'pricelist', 'total_cost'))
+        context.update(get_context_for_view_list(PriceModeTDistance, self.request.user, 'pricelist', 'cost', 'creater',
+                                                 'date_of_creation','effective_date','mode_transport'))
         return context
 
 
@@ -204,7 +207,8 @@ class PricePackingViewList(LoginRequiredMixin, UserIsStaff, PermissionRequiredMi
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context.update(get_context_for_view_list(PricePacking, self.request.user, 'pricelist', 'total_cost'))
+        context.update(get_context_for_view_list(PricePacking, self.request.user, 'pricelist', 'cost', 'creater',
+                                                 'date_of_creation','effective_date','packing'))
         return context
 
 

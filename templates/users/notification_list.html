@@ -1,0 +1,11 @@
+
+  <table class="table">
+	{%for ntfn in notification_list %}
+	            <tr {% if not ntfn.viewed %} class="newnotification" {% endif %}>
+                    <td>{{ntfn.date_of_creation}}</td>
+                    <td>{{ntfn.content}}</td>
+                </tr>
+    {% empty %}
+                <p>Новых уведомлений нет</p>
+    {% endfor %}
+</table>

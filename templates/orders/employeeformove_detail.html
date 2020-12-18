@@ -1,0 +1,8 @@
+{% extends 'base_detail.html' %}
+
+{% block data %}
+  	<p>{{verbose.move_order}}: <a href="{{ object.move_order.get_absolute_url }}">{{ object.move_order }}</a></p>
+  	<p>{{verbose.group}}: {{ object.group }}</p>
+  	<p>{{verbose.employee}}: {{ object.employee }}</p>
+  	<p>{{verbose.hired_hours}}: {{ object.hired_hours }}</p>
+{% endblock %}

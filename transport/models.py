@@ -10,6 +10,7 @@ class ModeTransport(models.Model):
     image = models.ImageField(upload_to="static/image/data/transport",
                               verbose_name="Изображение вида",
                               blank=True)
+    description = models.TextField(verbose_name="Описание", blank=True)
     available = models.BooleanField(verbose_name="Доступен",
                                     help_text="Выберите доступен ли вид транспорта для выбора",
                                     default=False)

@@ -1,9 +1,13 @@
 {% extends 'base_content.html' %}
 
 {% block contents %}
-	<div class="card">
+	<div class="card base_detail">
+		{% if bool_perm_of_user.change %}
 		<a class="abtn" href="{{buttons_urls.change}}">Редактировать</a>
+		{% endif %}
+		{% if bool_perm_of_user.delete %}
 		<a class="abtn" href="{{buttons_urls.delete}}">Удалить</a>
+		{% endif %}
 	  	{% block data %}
 	  	{% endblock %}
 	</div>

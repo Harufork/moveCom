@@ -1,0 +1,34 @@
+{% extends 'base_detail.html' %}
+
+{% block data %}
+	<p>{{verbose.image}}:
+		{% if object.image %}
+			</p><img src="{{object.image.url}}">
+		{% else %}
+			Отсутствует</p>
+		{% endif %}
+	<p>{{verbose.group}}: <a href="">{{ object.group }}</a></p>
+
+	<p>{{verbose.available}}: {% if object.available %}
+		Да
+	{% else %}
+		Нет
+	{% endif %}
+	</p>
+
+	<p>{{verbose.available_in_order}}: {% if object.available_in_order %}
+		Да
+	{% else %}
+		Нет
+	{% endif %}
+	</p>
+
+	<p>{{verbose.available_in_request}}: {% if object.available_in_request %}
+		Да
+	{% else %}
+		Нет
+	{% endif %}
+	</p>
+	
+
+{% endblock %}

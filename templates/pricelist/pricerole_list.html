@@ -1,5 +1,9 @@
 {% extends 'base_list.html' %}
 
 {% block data %}
-  	<td>{{ object.total_cost }}</td>
+  	<td>{{ object.cost }}</td>
+  	<td>{{ object.creater }}</td>
+  	<td>{{ object.date_of_creation }}</td>
+  	<td>{{ object.effective_date }}</td>
+  	<td>{{ object.group }}</td>
 {% endblock %}

@@ -1,0 +1,10 @@
+{% extends 'base_detail.html' %}
+
+{% block data %}
+	<p>{{verbose.username}}: {{ object.get_username }}</p>
+	<p>{{verbose.first_name}}: {{ object.first_name }}</p>
+	<p>{{verbose.last_name}}: {{ object.last_name }}</p>
+
+
+
+{% endblock %}

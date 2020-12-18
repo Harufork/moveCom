@@ -17,7 +17,7 @@ def get_verbose_of_field_from_class(cls, field):
 
 def get_verbose_of_fields_from_class(cls):
     """Возвращает значения подробного названия выбранных полей класса"""
-    return { "verbose" : {fn.name: fn.verbose_name  for fn in cls._meta.get_fields() if hasattr(fn, 'verbose_name')} }
+    return {fn.name: fn.verbose_name  for fn in cls._meta.get_fields() if hasattr(fn, 'verbose_name')}
 
 
 def get_cls_verbose_name_plural(cls):
@@ -47,6 +47,10 @@ def get_urls_for_interection(cls_name):
     }
 
 
+def get_abstract_url_for_navigation(cls_name):
+    return {"add": reverse("add_" + cls_name), "list": reverse(cls_name + "_list")}
+
+
 def get_urls_of_object_for_interaction(cls_name, pk):
     return {
         # 'add': reverse("add_" + cls_name),
@@ -54,6 +58,8 @@ def get_urls_of_object_for_interaction(cls_name, pk):
         'delete': reverse("delete_" + cls_name, args=[pk]),
     }
 
+def get_lower_name_cls(cls):
+    return cls.__name__.lower()
 
 def get_context_for_view_list(cls, user, app_name, *args):
     context = get_verbose_of_fields_from_class_with_param(cls, *args)
@@ -66,7 +72,8 @@ def get_context_for_view_list(cls, user, app_name, *args):
 
 
 def get_context_for_detail_view(cls, object, user, app_name):
-    context = get_verbose_of_fields_from_class(cls)
+    context = {}
+    context['verbose'] = get_verbose_of_fields_from_class(cls)
     context['title'] = f"{get_cls_verbose_name(cls)}: {object}"
     cls_name = cls.__name__.lower()
     context["bool_perm_of_user"] = get_bool_perm_for_user(user, app_name, cls_name)
@@ -96,6 +103,7 @@ def get_context_for_delete_view(cls, object):
         context['title']: ""
     }
     return context
+
 
 def isInt(value):
     try:

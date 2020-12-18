@@ -1,0 +1,9 @@
+{% extends 'base_detail.html' %}
+
+{% block data %}
+	<p>{{verbose.user}}: <a href="">{{ object.user }}</a></p>
+	<p>{{verbose.patronymic}}: {{ object.patronymic }}</p>
+	<p>{{verbose.phone_number}}: {{ object.phone_number }}</p>
+	<p>{{verbose.birth_date}}: {{ object.birth_date }}</p>
+
+{% endblock %}

@@ -1,45 +1,25 @@
 {% extends 'base.html' %}
-
 {% block content %}
 <main>
-	<div class="card">
-		<h3 class="heading-page">Навигация</h3>
+    <div class="card main_navigation">
+        <h3 class="heading-page">Навигация</h3>
 
-		{% if perms.packing.view_typepacking or perms.packing.view_measurement or perms.packing.view_packing %}
-		<h2>Упаковка</h2>
-		<div>
-			{% if perms.packing.view_typepacking %}<a href="{% url 'typepacking_list' %}">Типы упаковки</a>{% endif %}
-			{% if perms.packing.view_measurement %}<a href="{% url 'measurement_list' %}">Единицы измерения</a>{% endif %}
-			{% if perms.packing.view_packing %}<a href="{% url 'packing_list' %}">Упаковочный материал</a>{% endif %}
-		</div>
-		{% endif %}
-
-		{% if perms.transport.view_modetransport or  perms.transport.view_transpor %}
-		<h2>Транспорт</h2>
-		<div>
-			{% if perms.transport.view_modetransport %}<a href="{% url 'modetransport_list' %}">Виды транспорта</a>{% endif %}
-			{% if perms.transport.view_transport %}<a href="{% url 'transport_list' %}">Транспорт</a>{% endif %}
-		</div>
-		{% endif %}
-
-		{% if perms.pricelist.view_pricerole or  perms.pricelist.view_pricemodetransport or perms.pricelist.view_pricemodetdistance or perms.pricelist.view_pricepacking %}
-		<h2>Прайс-листы</h2>
-		<div>
-			{% if perms.pricelist.view_pricerole %}<a href="{% url 'pricerole_list' %}">Прайс-лист ролей</a>{% endif %}
-			{% if perms.pricelist.view_pricemodetransport %}<a href="{% url 'pricemodetransport_list' %}">Прайс-лист видов транспорта</a>{% endif %}
-			{% if perms.pricelist.view_pricemodetdistance %}<a href="{% url 'pricemodetdistance_list' %}">Прайс-лист км транспорта</a>{% endif %}
-			{% if perms.pricelist.view_pricepacking %}<a href="{% url 'pricepacking_list' %}">Прайс-лист упаковки</a>{% endif %}
-		</div>
-		{% endif %}
-
-		{% if perms.orders.view_moveassistancerequest or perms.orders.view_moverequest or perms.orders.view_moveorder %}
-		<h2>Заказы</h2>
-		<div>
-			{% if perms.orders.view_moveassistancerequest %}<a href="{% url 'moveassistancerequest_list' %}">Заказы на помощь</a>{% endif %}
-			{% if perms.orders.view_moverequest %}<a href="{% url 'moverequest_list' %}">Заявки на переезд</a>{% endif %}
-			{% if perms.orders.view_moveorder %}<a href="{% url 'moveorder_list' %}">Заказы на переезд</a>{% endif %}
-		</div>
-		{% endif %}
-	</div>
+        <div class="a_main_navigation">
+            <h2>Формы</h2>
+            <p><a href="{% url 'moveorder_executor_list' %}">Выполнение заказов</a></p>
+            <p><a href="{% url 'moveorder_executor_list' %}">Подтверждение заявок</a></p>
+        </div>
+        {% for key, value in applications.items %}
+        <div>
+        <h2>{{key}}</h2>
+        {% for i in value %}
+        {% if i.line_break %}
+        <br>
+        {% endif %}
+        <p><a href="{{ i.url.list }}">{{i.verbose}}</a>{% if i.change_perm %} {% if i.url.add %} <a class="abtn" href="{{ i.url.add }}">Создать</a>{% endif %} {% endif %}</p>
+        {% endfor %}
+        </div>
+        {% endfor %}
+    </div>
 </main>
 {% endblock %}
